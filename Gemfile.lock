@@ -1,0 +1,34 @@
+GIT
+  remote: https://github.com/ruby-amqp/amq-client
+  revision: 46c325c7b4de562b969b85cd6f4af64f735641d9
+  specs:
+    amq-client (1.0.0.pre2)
+      amq-protocol (>= 0.9.0)
+      eventmachine
+
+GIT
+  remote: https://github.com/ruby-amqp/amq-protocol
+  revision: 930a46cd5e9387247d3aaaa8c0fd39efba2ab501
+  specs:
+    amq-protocol (1.0.0.pre5)
+
+GIT
+  remote: https://github.com/ruby-amqp/amqp
+  revision: 6f026b079373692785103e6a145366ed89644970
+  specs:
+    amqp (1.0.0.pre2)
+      amq-client (~> 1.0.0.pre1)
+      amq-protocol (~> 1.0.0.pre3)
+      eventmachine
+
+GEM
+  specs:
+    eventmachine (0.12.10)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  amq-client!
+  amq-protocol!
+  amqp!
