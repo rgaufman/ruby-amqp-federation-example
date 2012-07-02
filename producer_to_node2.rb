@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 require "rubygems"
+require "bundler/setup"
 require "amqp"
 
 AMQP.start('amqp://guest:guest@localhost:35672') do |connection, open_ok|
