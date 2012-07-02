@@ -5,7 +5,7 @@ require "rubygems"
 require "bundler/setup"
 require "amqp"
 
-AMQP.start('amqp://guest:guest@localhost:35672', :heartbeat => 1) do |connection, open_ok|
+AMQP.start('amqp://guest:guest@localhost:25672', :heartbeat => 1) do |connection, open_ok|
     channel = AMQP::Channel.new(connection)
     #exchange = channel.topic('xanview', :durable => true, :auto_delete => false)
     exchange = AMQP::Exchange.new(channel, "x-federation", "xanview", :durable => true, :arguments => {"upstream-set" => "my-upstreams", "type" => "topic", "durable" => "true"})
