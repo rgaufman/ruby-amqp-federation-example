@@ -5,12 +5,23 @@ require "rubygems"
 require "bundler/setup"
 require "amqp"
 
-AMQP.start('amqp://guest:guest@localhost:25672', :heartbeat => 1) do |connection, open_ok|
+i=0
+EventMachine.run do
+  AMQP.connect('amqp://guest:guest@localhost:25672') do |connection, open_ok|
     channel = AMQP::Channel.new(connection)
-    #exchange = channel.topic('xanview', :durable => true, :auto_delete => false)
     exchange = AMQP::Exchange.new(channel, "x-federation", "xanview", :durable => true, :arguments => {"upstream-set" => "my-upstreams", "type" => "topic", "durable" => "true"})
-    EventMachine.add_periodic_timer(1) do
-      puts "publishing msg"
-      exchange.publish("this is a test message", :routing_key => "some.topic" )
+
+    # Publish Periodically
+    EventMachine.add_periodic_timer(0.001) do
+      i+=1
+      puts "#{i}: publishing msg"
+      exchange.publish("this is a test message to node1", :routing_key => "some.topic", :persistent => true )
     end
+
+    # Publish 1,000 messages
+    #(1..1000).each do
+    #  i+=1
+    #  exchange.publish("this is a test message to node1", :routing_key => "some.topic", :persistent => true )
+    #end
+  end
 end
