@@ -1,0 +1,12 @@
+# Rabbitmq Stuff
+node1/logs
+node1/mnesia.pid
+node1/mnesia
+node1/plugins
+
+node2/logs
+node2/mnesia.pid
+node2/mnesia
+node2/plugins
+
+erl_crash.dump

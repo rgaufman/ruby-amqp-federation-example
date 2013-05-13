@@ -5,12 +5,11 @@ require "rubygems"
 require "bundler/setup"
 require "amqp"
 
+i=0
 AMQP.start('amqp://guest:guest@localhost:25672') do |connection, open_ok|
   channel  = AMQP::Channel.new(connection)
-  exchange = AMQP::Exchange.new(channel, "x-federation", "xanview", :durable => true,
-    :arguments => {"upstream-set" => "my-upstreams", "type" => "topic", "durable" => "true"})
-  i=0
-  channel.queue("testqueue1", :durable => true) do |queue|
+  exchange = channel.topic("xanview", durable: true)
+  channel.queue("xanview.node1.to", :durable => true) do |queue|
     queue.bind(exchange, :routing_key => '#')
     queue.subscribe do |metadata, payload|
       i+=1

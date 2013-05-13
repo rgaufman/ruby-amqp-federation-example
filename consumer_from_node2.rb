@@ -8,9 +8,8 @@ require "amqp"
 i=0
 AMQP.start('amqp://guest:guest@localhost:35672') do |connection, open_ok|
   channel  = AMQP::Channel.new(connection)
-  exchange = AMQP::Exchange.new(channel, "x-federation", "xanview", :durable => true,
-    :arguments => {"upstream-set" => "my-upstreams", "type" => "topic", "durable" => "true"})
-  channel.queue("testqueue2", :durable => true) do |queue|
+  exchange = channel.topic("xanview", durable: true)
+  channel.queue("xanview.node2.to", :durable => true) do |queue|
     queue.bind(exchange, :routing_key => '#')
     queue.subscribe do |metadata, payload|
       i+=1

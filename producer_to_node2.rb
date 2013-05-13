@@ -6,22 +6,25 @@ require "bundler/setup"
 require "amqp"
 
 i=0
+routing_key = "xanview.node1"
+
 EventMachine.run do
   AMQP.connect('amqp://guest:guest@localhost:35672') do |connection, open_ok|
-    channel = AMQP::Channel.new(connection)
-    exchange = AMQP::Exchange.new(channel, "x-federation", "xanview", :durable => true, :arguments => {"upstream-set" => "my-upstreams", "type" => "topic", "durable" => "true"})
+    channel  = AMQP::Channel.new(connection)
+    queue = channel.queue("xanview.node2.from", durable: true)
 
-    # Publish Periodically
-    EventMachine.add_periodic_timer(0.001) do
-      i+=1
-      puts "#{i}: publishing msg"
-      exchange.publish("this is a test message to node2", :routing_key => "some.topic", :persistent => true )
+    exchange = channel.topic("xanview", durable: true)
+    queue.bind(exchange, routing_key: '#')
+
+    #EventMachine.add_periodic_timer(0.001) do
+    #  i+=1
+    #  puts "#{i}: publishing msg"
+    #  exchange.publish("test message from node2", routing_key: routing_key, persistent: true)
+    #end
+
+    (1..1000).each do
+      exchange.publish("test message from node2", routing_key: routing_key, persistent: true)
     end
 
-    # Publish 1,000 messages
-    #(1..1000).each do
-    #  i+=1
-    #  exchange.publish("this is a test message to node2", :routing_key => "some.topic", :persistent => true )
-    #end
   end
 end
